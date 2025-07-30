@@ -84,7 +84,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
       await authApi.logout()
     } catch (error) {
       console.error("Logout API error:", error)
-      // Continue with local cleanup even if API call fails
     } finally {
       setUser(null)
       tokenUtils.removeTokens()
@@ -96,15 +95,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const response = await authApi.register({ username, email, password })
 
-      // Store the token from the response
       if (response.data?.token) {
         tokenUtils.setTokens({
           accessToken: response.data.token,
-          refreshToken: '' // Backend only returns one token
+          refreshToken: ''
         })
       }
 
-      // Store user data
       const userData: User = {
         id: response.data?.user.id.toString() || '',
         name: response.data?.user.username || '',
