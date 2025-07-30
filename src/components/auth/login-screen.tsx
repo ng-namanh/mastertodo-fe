@@ -154,7 +154,7 @@ export function LoginScreen() {
 
             <div className="mt-4 p-3 bg-blue-50 rounded-lg">
               <p className="text-xs text-blue-800 font-medium mb-1">Demo Credentials:</p>
-              <p className="text-xs text-blue-700">Email: john@example.com</p>
+              <p className="text-xs text-blue-700">Email: admin@example.com</p>
               <p className="text-xs text-blue-700">Password: password123</p>
             </div>
           </CardContent>
