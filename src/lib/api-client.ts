@@ -1,7 +1,7 @@
 import { tokenUtils } from "@/config/token"
 import ky from "ky"
 
-const BASE_API_URL = "http://localhost:3000"
+const BASE_API_URL = "https://api.namanh.id.vn"
 
 export const apiClient = ky.create({
   prefixUrl: BASE_API_URL,
