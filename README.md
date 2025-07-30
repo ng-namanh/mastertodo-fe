@@ -1,69 +1,68 @@
-# React + TypeScript + Vite
+## 🚀 Tính Năng Chính
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### 🔐 Xác Thực & Bảo Mật
+- **Đăng ký tài khoản mới** 
+- **Đăng nhập/Đăng xuất**
 
-Currently, two official plugins are available:
+### ✅ Quản Lý Todo
+- **Tạo todo mới** 
+- **Chỉnh sửa todo** 
+- **Xóa todo** 
+- **Đánh dấu hoàn thành** 
+- **Gán người thực hiện** 
+- **Đặt mức độ ưu tiên**: High, Medium, Low
+- **Theo dõi trạng thái**: Pending, In Progress, Completed
+- **Đánh dấu yêu thích** 
+- **Đặt ngày hạn** và nhắc nhở
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 🔍 Lọc & Tìm Kiếm
+- **Tìm kiếm theo từ khóa** trong title và description
+- **Lọc theo trạng thái**: Pending, In Progress, Completed
+- **Lọc theo độ ưu tiên**: High, Medium, Low
+- **Lọc theo người được gán**
 
-## Expanding the ESLint configuration
+## 🛠 Công Nghệ Sử Dụng
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Frontend
+- **React 19** - UI Framework
+- **TypeScript** - Type Safety
+- **Vite** - Build Tool & Dev Server
+- **TailwindCSS** - Styling
+- **Lucide React** - Icons
+- **React Router** - Navigation
+- **TanStack Query** - Data Fetching & Caching
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Backend
+- **Nodejs Framework** KoaJs
+- **Database** Postgres 
+- **TypeScript** - Type Safety
+- **Deploy & Hosting** DigitalOcean
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 📦 Cài Đặt & Khởi Chạy
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Yêu Cầu Hệ Thống
+- Node.js >= 22.0.0
+- npm hoặc yarn
+
+### 1. Clone Repository
+```bash
+git clone <repository-url>
+cd todolist_fe
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 2. Cài Đặt Dependencies
+```bash
+npm install
+# hoặc
+yarn install
 ```
+
+### 3. Khởi Chạy Development Server
+```bash
+npm run dev
+# hoặc
+yarn dev
+```
+
+Ứng dụng sẽ chạy tại: `http://localhost:5173`
+

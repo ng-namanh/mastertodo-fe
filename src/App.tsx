@@ -1,166 +1,114 @@
-import { AddTaskSheet } from "@/components/add-task-sheet"
-import { Header } from "@/components/header"
-import { Sidebar } from "@/components/sidebar"
-import { TaskGrid } from "@/components/task-grid"
-import type { Priority, Todo } from "@/types/todo"
-import { useState } from "react"
+import { LoginScreen } from "@/components/auth/login-screen"
+import { ProtectedRoute } from "@/components/auth/protected-route"
+import { RegisterScreen } from "@/components/auth/register-screen"
+import { WelcomeScreen } from "@/components/auth/welcome-screen"
+import { ErrorBoundary } from "@/components/error-boundary"
+import { TodoApp } from "@/components/todo-app"
+import { AuthProvider, useAuth } from "@/contexts/auth-context"
+import { queryClient } from "@/lib/query-client"
+import { QueryClientProvider } from "@tanstack/react-query"
+import type React from "react"
+import { createBrowserRouter, Navigate, RouterProvider } from "react-router"
+import { Toaster } from "sonner"
 
-const users = [
-  "Emily Carter",
-  "Liam Walker",
-  "Sophie Lee",
-  "Daniel Kim",
-  "Olivia Adams",
-  "Noah Bennett",
-  "Mia Turner",
-  "Lucas Evans",
-]
-
-const initialTodos: Todo[] = [
-  {
-    id: "1",
-    title: "Design homepage layout",
-    assignedTo: ["Emily Carter", "Liam Walker"],
-    dueDate: new Date("2023-06-05"),
-    status: "In Progress",
-    priority: "High",
-    subtasks: { completed: 1, total: 2 },
-    starred: true,
-  },
-  {
-    id: "2",
-    title: "Conduct user interviews",
-    assignedTo: ["Liam Walker"],
-    dueDate: new Date("2023-06-12"),
-    status: "Pending",
-    priority: "Medium",
-    subtasks: { completed: 1, total: 2 },
-    starred: false,
-  },
-  {
-    id: "3",
-    title: "Write unit tests",
-    assignedTo: ["Sophie Lee"],
-    dueDate: new Date("2023-06-07"),
-    status: "In Progress",
-    priority: "High",
-    subtasks: { completed: 0, total: 2 },
-    starred: true,
-  },
-  {
-    id: "4",
-    title: "Prepare launch checklist",
-    assignedTo: ["Daniel Kim", "Olivia Adams"],
-    dueDate: new Date("2023-06-20"),
-    status: "Pending",
-    priority: "Low",
-    subtasks: { completed: 0, total: 1 },
-    starred: false,
-  },
-  {
-    id: "5",
-    title: "Update privacy policy",
-    assignedTo: ["Olivia Adams"],
-    dueDate: new Date("2023-06-14"),
-    status: "In Progress",
-    priority: "Medium",
-    subtasks: { completed: 1, total: 2 },
-    starred: false,
-  },
-  {
-    id: "6",
-    title: "Deploy to staging",
-    assignedTo: ["Noah Bennett"],
-    dueDate: new Date("2023-06-02"),
-    status: "Completed",
-    priority: "High",
-    subtasks: { completed: 2, total: 2 },
-    starred: true,
-  },
-  {
-    id: "7",
-    title: "Organize team retro",
-    assignedTo: ["Mia Turner", "Olivia Adams"],
-    dueDate: new Date("2023-06-10"),
-    status: "Pending",
-    priority: "Low",
-    subtasks: { completed: 0, total: 2 },
-    starred: false,
-  },
-  {
-    id: "8",
-    title: "Refactor dashboard UI",
-    assignedTo: ["Lucas Evans", "Mia Turner", "Olivia Adams"],
-    dueDate: new Date("2023-06-18"),
-    status: "In Progress",
-    priority: "High",
-    subtasks: { completed: 1, total: 2 },
-    starred: true,
-  },
-]
-
-export default function TodoApp() {
-  const [todos, setTodos] = useState<Todo[]>(initialTodos)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([])
-  const [selectedPriorities, setSelectedPriorities] = useState<Priority[]>([])
-  const [showStarredOnly, setShowStarredOnly] = useState(false)
-  const [activeTab, setActiveTab] = useState("All")
-  const [isAddTaskOpen, setIsAddTaskOpen] = useState(false)
-  const [viewMode, setViewMode] = useState<"list" | "grid">("list")
-
-  const filteredTodos = todos.filter((todo) => {
-    const matchesSearch = todo.title.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesTab = activeTab === "All" || todo.status === activeTab
-    const matchesUsers = selectedUsers.length === 0 || selectedUsers.some((user) => todo.assignedTo.includes(user))
-    const matchesPriority = selectedPriorities.length === 0 || selectedPriorities.includes(todo.priority)
-    const matchesStarred = !showStarredOnly || todo.starred
-
-    return matchesSearch && matchesTab && matchesUsers && matchesPriority && matchesStarred
-  })
-
-  const updateTodo = (updatedTodo: Todo) => {
-    setTodos(todos.map((todo) => (todo.id === updatedTodo.id ? updatedTodo : todo)))
-  }
-
-  const addTodo = (newTodo: Omit<Todo, "id" | "subtasks" | "starred">) => {
-    const todo: Todo = {
-      ...newTodo,
-      id: Date.now().toString(),
-      subtasks: { completed: 0, total: 1 },
-      starred: false,
-    }
-    setTodos([...todos, todo])
-  }
-
+function AuthWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header searchQuery={searchQuery} onSearchChange={setSearchQuery} onAddTask={() => setIsAddTaskOpen(true)} />
-
-      <div className="flex">
-        <Sidebar
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          users={users}
-          selectedUsers={selectedUsers}
-          onUsersChange={setSelectedUsers}
-          selectedPriorities={selectedPriorities}
-          onPrioritiesChange={setSelectedPriorities}
-          showStarredOnly={showStarredOnly}
-          onStarredOnlyChange={setShowStarredOnly}
-        />
-
-        <TaskGrid
-          todos={filteredTodos}
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          onUpdateTodo={updateTodo}
-        />
-      </div>
-
-      <AddTaskSheet isOpen={isAddTaskOpen} onClose={() => setIsAddTaskOpen(false)} onAddTodo={addTodo} users={users} />
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+          {children}
+          <Toaster
+            position="top-right"
+            expand={true}
+            richColors={true}
+            closeButton={true}
+            toastOptions={{
+              style: {
+                background: 'white',
+                border: '1px solid #e2e8f0',
+                boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+              },
+            }}
+          />
+        </div>
+      </AuthProvider>
+    </QueryClientProvider>
   )
+}
+
+function WelcomeRoute() {
+  const { user } = useAuth()
+  return user ? <Navigate to="/dashboard" replace /> : <WelcomeScreen />
+}
+
+function LoginRoute() {
+  const { user } = useAuth()
+  return user ? <Navigate to="/dashboard" replace /> : <LoginScreen />
+}
+
+function RegisterRoute() {
+  const { user } = useAuth()
+  return user ? <Navigate to="/dashboard" replace /> : <RegisterScreen />
+}
+
+function DashboardRoute() {
+  return (
+    <ProtectedRoute>
+      <TodoApp />
+    </ProtectedRoute>
+  )
+}
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <AuthWrapper>
+        <WelcomeRoute />
+      </AuthWrapper>
+    ),
+    errorElement: <ErrorBoundary />,
+  },
+  {
+    path: "/login",
+    element: (
+      <AuthWrapper>
+        <LoginRoute />
+      </AuthWrapper>
+    ),
+    errorElement: <ErrorBoundary />,
+  },
+  {
+    path: "/register",
+    element: (
+      <AuthWrapper>
+        <RegisterRoute />
+      </AuthWrapper>
+    ),
+    errorElement: <ErrorBoundary />,
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <AuthWrapper>
+        <DashboardRoute />
+      </AuthWrapper>
+    ),
+    errorElement: <ErrorBoundary />,
+    loader: async () => {
+      return null
+    },
+  },
+  {
+    path: "*",
+    element: (
+      <AuthWrapper>
+        <Navigate to="/" replace />
+      </AuthWrapper>
+    ),
+  },
+])
+
+export default function App() {
+  return <RouterProvider router={router} />
 }
